@@ -139,7 +139,7 @@ if (prodConf.productionGzip) { //是否开启Gzip压缩
                 prodConf.productionGzipExtensions.join('|') +
                 ')$'
             ),
-            threshold: 10240, //只有大小大于该值的资源会被处理。默认值是 0
+            threshold: 1024, //只有大小大于该值的资源会被处理。默认值是 0
             minRatio: 0.8 //只有压缩率小于这个值的资源才会被处理,默认值是 0.8
         })
     )
