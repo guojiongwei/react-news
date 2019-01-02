@@ -13,8 +13,7 @@
     ],
     "plugins": [
         ["transform-runtime", { "polyfill": true }],
-        "transform-decorators-legacy",
-        "glamor/babel"
+        "transform-decorators-legacy"
     ],
     "env": {
         "test": {

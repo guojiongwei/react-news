@@ -1,7 +1,6 @@
 "use strict"
 const path = require('path')
 const webpack = require('webpack')
-const styleLoader = require('./style-loader')
 const devConf = require('../config').dev  //开发环境配置参数
 const baseConfig = require('./webpack.base.conf') //webpack基本配置
 
@@ -25,10 +24,6 @@ const dev = merge(baseConfig, {
         filename: '[name]-[hash].js',
         //html引用资源路径,在dev-server中,引用的是内存中文件！
         publicPath: devConf.publicPath
-    },
-
-    module: {
-        rules: styleLoader.styleLoader({ extract: false, sourceMap: true })
     },
 
     //生成sourceMaps(方便调试)

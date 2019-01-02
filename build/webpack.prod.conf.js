@@ -1,7 +1,6 @@
 "use strict"
 const path = require('path')
 const webpack = require('webpack')
-const styleLoader = require('./style-loader')
 const prodConf = require('../config').build //生产环境配置参数
 const baseConf = require('./webpack.base.conf') //webpack基本配置
 
@@ -15,6 +14,7 @@ const ExtractTextPlugin = require("extract-text-webpack-plugin")
 const OptimizeCSSPlugin = require("optimize-css-assets-webpack-plugin")
 //一个拷贝文件的webpack插件！
 const CopyWebpackPlugin = require("copy-webpack-plugin")
+//一个压缩js的webpack插件！
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 // 资源路径
@@ -33,12 +33,6 @@ const prod = merge({}, baseConf, {
 
         //用于打包require.ensure(代码分割)方法中引入的模块
         chunkFilename: assetsPath('js/[name].[chunkhash].js')
-    },
-    module: {
-        rules: styleLoader.styleLoader({
-            extract: true,
-            sourceMap: true
-        })
     },
     devtool: prodConf.productionSourceMap ? prodConf.devtool : false,
     plugins: [

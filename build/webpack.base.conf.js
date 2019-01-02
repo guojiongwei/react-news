@@ -24,12 +24,7 @@ module.exports = {
             'src': resolve('src'),
             'components': resolve('src/components'),
             'assets': resolve('src/assets'),
-            'views': resolve('src/views'),
-            'utils': resolve('src/utils'),
-            'actions': resolve('src/actions'),
-            'reducers': resolve('src/reducers'),
-            'config': resolve('src/config'),
-            'connect': resolve('src/utils/connect')
+            'views': resolve('src/views')
         }
     },
 
@@ -40,6 +35,10 @@ module.exports = {
                 test: /\.(js|jsx)$/, //资源路径
                 loader: 'babel-loader', //该路径执行的loader
                 include: resolve("src") //指定哪个文件loader
+            },
+            {//scss文件解析器
+              test: /\.(css|scss)$/,
+              use: ["style-loader", "css-loader", "sass-loader"]
             },
             {
                 test: /\.(png|jpe?g|gif|svg|ico)(\?.*)?$/,

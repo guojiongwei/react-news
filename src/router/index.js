@@ -1,41 +1,27 @@
 import React from 'react'
 import {Route, Switch, Redirect, HashRouter, BrowserRouter} from 'react-router-dom'
 import { AnimatedSwitch } from 'react-router-transition'
-import {routes, loyoutRouterMap, notLoyoutRouterMap} from './config'
-import Loyout from 'src/App'
-import GlobalComponents from 'components/GlobalComponents'
-import { css } from 'glamor'
-import AuthRoute from './authRoute'
-const renderRouteComponent = routes => routes.map( (route, index) => {
-    // if (route.auth) { 
-    //     return <AuthRoute key={index} {...route}/>
-    // } else {    
-    //     return <Route key={index} {...route}/>
-    // }
-    return <Route key={index} {...route} />
-})
-const NotLoyoutRouter = renderRouteComponent(notLoyoutRouterMap)
-const LoyoutRouter = renderRouteComponent(loyoutRouterMap)
-
+import asyncComponent from './asyncComponent'
+const _import_views = file => asyncComponent(() => import(`views/${file}`))
 const pageTransitionsFn = status => {
     let obj = {}
     if (status === 'left' || status === 'top') {
         obj = {
-            atEnter: {offset: 100, opacity: 0},
-            atLeave: {offset: -100, opacity: 0},
-            atActive: {offset: 0, opacity: 1}
+            atEnter: {offset: 100},
+            atLeave: {offset: -100},
+            atActive: {offset: 0}
         }
     }else if (status === 'right' || status === 'bottom'){
         obj = {
-            atEnter: {offset: -100, opacity: 0},
-            atLeave: {offset: 100, opacity: 0},
-            atActive: {offset: 0, opacity: 1}
+            atEnter: {offset: -100},
+            atLeave: {offset: 100},
+            atActive: {offset: 0}
         }
     }else{
         obj = {
-            atEnter: {offset: 0, opacity: 1},
-            atLeave: {offset: 0, opacity: 1},
-            atActive: {offset: 0, opacity: 1}
+            atEnter: {offset: 0},
+            atLeave: {offset: 0},
+            atActive: {offset: 0}
         }
     }
     return obj
@@ -43,58 +29,35 @@ const pageTransitionsFn = status => {
 const mapStyleFn = status => styles => {
     let obj = {}
     if (status === 'left' || status === 'right') {
-        obj = { transform: `translateX(${styles.offset}%)`, opacity: styles.opacity }
+        obj = { transform: `translateX(${styles.offset}%)`}
     }else if (status === 'top' || status === 'bottom'){
-        obj = { transform: `translateY(${styles.offset}%)`, opacity: styles.opacity }
+        obj = { transform: `translateY(${styles.offset}%)`}
     }
     return obj
 }
-const wrapperRule = css `
-    width: '100%';
-    height: '100%'; 
-    position: 'absolute';
-    left:0;
-    top:0;
-`
 class Router extends React.Component {
-    render () {
-        return (
-            <div className={wrapperRule}>
-                <BrowserRouter basename="/">
-                    <Route render={ ({location, history}) => {
-                        history.slideStatus = history.slideStatus || (history.action === 'POP' ? 'right' : history.slideStatus)
-                        const pageTransitions = pageTransitionsFn(history.slideStatus)
-                        const mapStyle = mapStyleFn(history.slideStatus)
-                        history.slideStatus = false
-                        return (
-                            <div style={{width: '100%', height: '100%'}}>
-                                <GlobalComponents/>
-                                <AnimatedSwitch
-                                    {...pageTransitions}
-                                    runOnMount={location.pathname === '/'}
-                                    mapStyles={mapStyle}
-                                    className="animate-wrapper">
-                                    {NotLoyoutRouter}
-                                    <Route render={ props => {
-                                        return <Loyout {...props}>
-                                            <Route render={()=> {
-                                                return (
-                                                    <Switch>
-                                                        {LoyoutRouter}
-                                                        <Redirect from="*" to="/404" />
-                                                    </Switch>
-                                                )
-                                            }}/>
-                                        </Loyout>
-                                    }} />
-                                </AnimatedSwitch>
-                            </div>
-                        )
-                    }}/>
-                </BrowserRouter>
-            </div>
-        )
-        
-    }
+  render () {
+      return (
+              <BrowserRouter>
+                <Switch>
+                  <Route render={ ({location, history}) => {
+                      history.action == 'POP' ? history.slideStatus = 'right' : history.slideStatus='left'
+                      const pageTransitions = pageTransitionsFn(history.slideStatus)
+                      const mapStyle = mapStyleFn(history.slideStatus)
+                      history.slideStatus = false
+                      return (
+                        <AnimatedSwitch className="animate-wrapper" {...pageTransitions} runOnMount={location.pathname === '/'} mapStyles={mapStyle}>
+                            <Route exact path='/' component={_import_views('Home/Home')} />
+                            <Route path='/kind' component={_import_views('Kind/Kind')} />
+                            <Route path='/cart' component={_import_views('Cart/Cart')} />
+                            <Route path='/user' component={_import_views('User/User')} />
+                        </AnimatedSwitch>
+                      )
+                  }}/>
+                  </Switch>
+              </BrowserRouter>
+      )
+      
+  }
 }
 export default Router
