@@ -36,6 +36,9 @@ const mapStyleFn = status => styles => {
     return obj
 }
 class Router extends React.Component {
+  componentDidMount() {
+    console.log(this)
+  }
   render () {
       return (
               <BrowserRouter>
