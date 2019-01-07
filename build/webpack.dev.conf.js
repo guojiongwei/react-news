@@ -12,7 +12,8 @@ const HtmlWebpackPlugin = require("html-webpack-plugin")
 const FriendlyErrorsPlugin = require("friendly-errors-webpack-plugin")
 //发送系统通知的一个node模块！
 const notifier = require("node-notifier")
-
+//一个抽离css的webpack插件！
+const ExtractTextPlugin = require("extract-text-webpack-plugin")
 // 拼接路径
 const resolve = dir => path.join(__dirname, '..', dir)
 // 资源路径
@@ -48,7 +49,10 @@ const dev = merge(baseConfig, {
     plugins: [
         //开启HMR(热替换功能,替换更新部分,不重载页面！)
         new webpack.HotModuleReplacementPlugin(),
-
+        // 抽离css
+        new ExtractTextPlugin({
+            filename: assetsPath('css/[name].[contenthash].css')
+        }),
         //显示模块相对路径
         new webpack.NamedModulesPlugin(),
 
