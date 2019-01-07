@@ -5,6 +5,7 @@ const baseConf = require('../config').base
 const resolve = dir => path.join(__dirname, '..', dir)
 // 资源路径
 const assetsPath = dir => path.posix.join(baseConf.assetsPath, dir)
+const ExtractTextPlugin = require("extract-text-webpack-plugin")
 
 //webpack 基本设置
 module.exports = {
@@ -38,9 +39,28 @@ module.exports = {
                 include: resolve("src") //指定哪个文件loader
             },
             {//scss文件解析器
-              test: /\.(css|scss)$/,
+              test: /\.scss$/,
               use: ["style-loader", "css-loader", "sass-loader"]
             },
+            {
+              test: /\.css$/,
+              use: ExtractTextPlugin.extract({ // 使用ExtractTextWebpackPlugin的extract方法
+                  fallback: {// 这里表示不提取的时候，使用什么样的配置来处理css
+                      loader: 'style-loader',
+                      options: {
+                          singleton: true // 表示将页面上的所有css都放到一个style标签内
+                      }
+                  },
+                  use: [ // 提取的时候，继续用下面的方式处理
+                      {
+                          loader: 'css-loader',
+                          options: {
+                              minimize: true  // 开启压缩
+                          }
+                      }  
+                  ]
+              })
+          },
             {
                 test: /\.(png|jpe?g|gif|svg|ico)(\?.*)?$/,
                 loader: 'url-loader',

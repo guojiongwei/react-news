@@ -21,6 +21,7 @@ export default loadComponent => (
         }
 
         render() {
+          console.log(...this.props)
             const { Component } = this.state
             return (Component) ? <Component {...this.props} /> : null
         }
